@@ -1,12 +1,15 @@
 ﻿
 using AdventOfCode.Day1;
+using AdventOfCode.Day2;
 
-var fileLines = System.IO.File.ReadAllLines(@"Day1\input.txt");
+// Day One
+//var input = DayOneInputReader.ReadInput(@"Day1\input.txt");
+//var dayOne = new DayOne(input);
 
-var input = fileLines.Select(f => int.Parse(f)).ToArray();
+//Console.WriteLine(dayOne.Answer().ToString());
 
-var dayOne = new DayOne(input);
-
-Console.WriteLine(dayOne.Answer().ToString());
-
+// Day 2
+var input = DayTwoInputReader.ReadInput(@"Day2\input.txt");
+var dayTwo = new DayTwo(input);
+Console.WriteLine(dayTwo.Answer().ToString());
 Console.Read();
