@@ -16,21 +16,26 @@ namespace AdventOfCode.Day4
 
         public int Answer()
         {
+            var fullWinningBoards = new List<((int, bool)[,]?, int)>();
             foreach (var drawnNumber in input.DrawnNumbers)
             {
-                CallANumber(drawnNumber);
+                CallANumber(drawnNumber, fullWinningBoards);
 
-                var winningBoard = WinningBoard();
+                var winningBoards = WinningBoards(fullWinningBoards);
 
-                if (winningBoard.Item1 != null)
+                if (winningBoards != null && winningBoards.Any())
                 {
-                    return ScoreTheBoard(winningBoard.Item1, drawnNumber);
+                    foreach (var winningBoard in winningBoards)
+                    {
+                        fullWinningBoards.Add((winningBoard, ScoreTheBoard(winningBoard, drawnNumber)));
+                    }
                 }
             }
-            return 0;
+            var lastWinner = fullWinningBoards.Last();
+            return lastWinner.Item2;
         }
 
-        private void CallANumber(int drawnNumber)
+        private void CallANumber(int drawnNumber, List<((int, bool)[,]?, int)> alreadyWinningBoards)
         {
             foreach (var board in input.Boards)
             {
@@ -47,9 +52,11 @@ namespace AdventOfCode.Day4
             }
         }
 
-        private ((int, bool)[,]?, int?, int?) WinningBoard()
+        private List<(int, bool)[,]?> WinningBoards(List<((int, bool)[,]?, int)> alreadyWinningBoards)
         {
-            foreach (var board in input.Boards)
+            var remainingBoards = input.Boards.Where(b => alreadyWinningBoards.All(awb => awb.Item1 != b)).ToList();
+            var newWinningBoards = new List<(int, bool)[,]?>();
+            foreach (var board in remainingBoards)
             {
                 for (var row = 0; row < input.BoardDim; row++)
                 {
@@ -63,13 +70,14 @@ namespace AdventOfCode.Day4
                     }
                     if (winningRow)
                     {
-                        return (board, row, null);
+                        newWinningBoards.Add(board);
+                        continue;
                     }
                 }
 
                 for (var col = 0; col < input.BoardDim; col++)
                 {
-                    var winningCol = false;
+                    var winningCol = true;
                     for (var row = 0; row < input.BoardDim; row++)
                     {
                         if (!board[row, col].Item2)
@@ -80,12 +88,13 @@ namespace AdventOfCode.Day4
 
                     if (winningCol)
                     {
-                        return (board, col, null);
+                        newWinningBoards.Add(board);
+                        continue;
                     }
                 }
             }
 
-            return (null, null, null);
+            return newWinningBoards;
         }
 
         private int ScoreTheBoard((int, bool)[,] board, int winningNumber)
