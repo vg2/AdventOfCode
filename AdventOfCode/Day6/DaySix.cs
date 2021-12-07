@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,15 +16,31 @@ namespace AdventOfCode.Day6
             this.daySixInput = daySixInput;
         }
 
-        public int Answer()
+        public long Answer()
         {
-            for (var i = 0; i < 80; i++)
+            var timers = new long[9];
+            var intList = daySixInput.Fish.Select(f => f.Timer);
+            foreach (var num in intList)
             {
-                this.daySixInput.Fish.ForEach(f => f.Tick());
+                timers[num]++;
             }
-            var counter = this.daySixInput.Fish.Sum(f => f.Count());
 
-            return counter;
+            for (var i = 0; i < 256; i++)
+            {
+                long newFish = 0;
+                for (var j = 0; j < 8; j++)
+                {
+                    if (j == 0)
+                    {
+                        newFish = timers[j];
+                    }
+                    timers[j] = timers[j + 1];
+                }
+                timers[6] += newFish;
+                timers[8] = newFish;
+            }
+
+            return timers.Sum();
         }
     }
 }
