@@ -17,12 +17,20 @@ namespace AdventOfCode.Day7
         public int Answer()
         {
             var total = int.MaxValue;
+            var highestPosition = input.Max();
             var answer = new int[input.Length];
-            for (int i = 0; i < input.Length; i++)
+            for (int i = 0; i < highestPosition; i++)
             {                
                 for (int j = 0; j < input.Length; j++)
                 {
-                    answer[j] = Math.Abs(input[j] - input[i]);
+                    var diff = Math.Abs(input[j] - i);
+                    var current = 0;
+                    while (diff > 0)
+                    {
+                        current += diff;
+                        diff--;
+                    }
+                    answer[j] = current;
                 }
                 var currentTotal = answer.Sum();
                 if (currentTotal < total)
