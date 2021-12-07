@@ -20,6 +20,7 @@ namespace AdventOfCode.Day6
         {
             var timers = new long[9];
             var intList = daySixInput.Fish.Select(f => f.Timer);
+
             foreach (var num in intList)
             {
                 timers[num]++;
