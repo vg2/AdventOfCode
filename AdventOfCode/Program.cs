@@ -1,8 +1,8 @@
 ﻿
 
-using AdventOfCode.Day7;
+using AdventOfCode.Day8;
 
-var input = DaySevenInputReader.ReadInput(@"Day7\input.txt");
-var day = new DaySeven(input);
+var input = DayEightInputReader.ReadInput(@"Day8\input.txt");
+var day = new DayEight(input);
 Console.WriteLine(day.Answer().ToString());
 Console.Read();
