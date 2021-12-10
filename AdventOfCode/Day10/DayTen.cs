@@ -19,10 +19,10 @@ namespace AdventOfCode.Day10
 
         private readonly Dictionary<char, int> Score = new Dictionary<char, int>
         {
-            {')', 3 },
-            {']',57},
-            {'}',1197},
-            {'>',25137 },
+            {')', 1 },
+            {']',2},
+            {'}',3},
+            {'>',4 },
         };
 
 
@@ -32,9 +32,9 @@ namespace AdventOfCode.Day10
             this.input = input;
         }
 
-        public int Answer()
+        public long Answer()
         {
-            var illegalChars = new List<char>();
+            var illegalLines = new List<string>();
 
             foreach (var line in this.input)
             {
@@ -57,14 +57,47 @@ namespace AdventOfCode.Day10
                         }
                         else
                         {
-                            illegalChars.Add(c);
+                            illegalLines.Add(line);
                             break;
                         }
                     }
                 }
             }
 
-            return illegalChars.Select(ch => Score[ch]).Sum();
+            var incompleteLines = input.Except(illegalLines);
+            var completions = new List<long>();
+            foreach (var line in incompleteLines)
+            {
+                var stack = new Stack<char>();
+                foreach (var c in line)
+                {
+                    if (!stack.Any())
+                    {
+                        stack.Push(c);
+                    }
+                    else if (Pairs.ContainsKey(c))
+                    {
+                        stack.Push(c);
+                    }
+                    else
+                    {
+                        if (Pairs[stack.Peek()] == c)
+                        {
+                            stack.Pop();
+                        }
+                    }
+                }
+                var lineCompletion = stack.Select(c => Pairs[c]);
+                long lineScore = 0;
+                foreach (var c in lineCompletion)
+                {
+                    lineScore *= 5;
+                    lineScore += Score[c];
+                }
+                completions.Add(lineScore);
+            }
+
+            return completions.OrderBy(c => c).ElementAt(completions.Count / 2);
         }
 
     }
