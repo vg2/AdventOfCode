@@ -79,7 +79,10 @@ namespace AdventOfCode.Day12
 
             foreach (var node in startNode.Linked)
             {
-                if (currentPath.Count(n => n == node) < node.MaxVisits)
+                var alreadyVisitedSmallNodes = currentPath.Where(p => !p.IsStart && !p.IsEnd && !p.IsBig);
+                var distinctSmall = alreadyVisitedSmallNodes.Distinct();
+                if (currentPath.Count(n => n == node) < node.MaxVisits
+                    || (node.IsSmall & !node.IsStart && !node.IsEnd && alreadyVisitedSmallNodes.Count() == distinctSmall.Count()))
                 {
                     var copyPath = Node.CopyPath(currentPath);
                     paths.AddRange(Traverse(node, copyPath));
@@ -97,6 +100,9 @@ namespace AdventOfCode.Day12
         public bool IsStart { get; }
         public bool IsEnd { get; }
         public int MaxVisits { get; }
+
+        public bool IsBig => Label.ToUpper() == Label;
+        public bool IsSmall => !IsBig;
 
         public Node(string label, bool isStart = false, bool isEnd = false)
         {
