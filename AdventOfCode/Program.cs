@@ -1,7 +1,7 @@
 ﻿
 
-using AdventOfCode.Day13;
+using AdventOfCode.Day14;
 
-var day = new DayThirteen(@"Day13\input.txt");
+var day = new DayFourteen(@"Day14\input.txt");
 Console.WriteLine(day.Answer().ToString());
 Console.Read();
