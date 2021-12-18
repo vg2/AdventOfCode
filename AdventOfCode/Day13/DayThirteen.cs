@@ -50,10 +50,26 @@ namespace AdventOfCode.Day13
                 {
                     FoldLeft(dotPositions, foldInstr.coord);
                 }
-                break;
             }
 
             var uniquePositions = dotPositions.Distinct().ToList();
+            var maxRow = uniquePositions.Max(p => p.row);
+            var maxCol = uniquePositions.Max(p => p.col);
+            for (var i = 0; i <= maxRow; i++)
+            {
+                for (var j = 0; j <= maxCol; j++)
+                {
+                    if(uniquePositions.Contains((i,j)))
+                    {
+                        Console.Write("#");
+                    }
+                    else
+                    {
+                        Console.Write(".");
+                    }
+                }
+                Console.WriteLine();
+            }
             return uniquePositions.Count;
         }
 
