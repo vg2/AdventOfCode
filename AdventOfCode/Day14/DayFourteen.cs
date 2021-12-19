@@ -26,41 +26,53 @@ namespace AdventOfCode.Day14
         {
             var result = this.instruction.Template;
 
-            for (var i = 0; i < 10; i++)
+            var map = new Dictionary<string, long>();
+            for (var i = 0; i < result.Length - 1; i++)
             {
-                var insertionPoints = new List<(int pos, string val)>();
-                var index = 0;
-                for (var p = 0; p < result.Length - 1; p++)
+                var key = $"{result[i]}{result[i + 1]}";
+                AddOrIncrement(map, key);
+            }
+
+            for (var i = 0; i < 40; i++)
+            {
+                var newMap = new Dictionary<string, long>();
+
+
+                foreach(var key in map.Keys)
                 {
-                    if (instruction.PairInsertions.TryGetValue(result.Substring(p, 2), out var insertionValue))
+                    if (instruction.PairInsertions.TryGetValue(key, out var insertionValue))
                     {
-                        insertionPoints.Add((p + 1 + index, insertionValue));
-                        index++;
+                        AddOrIncrement(newMap, $"{key[0]}{insertionValue}", incrementVal: map[key]);
+                        AddOrIncrement(newMap, $"{insertionValue}{key[1]}", incrementVal: map[key]);
+                    }
+                    else
+                    {
+                        AddOrIncrement(newMap, key, incrementVal: map[key]);
                     }
                 }
 
-                foreach (var insertionPoint in insertionPoints)
-                {
-                    result = result.Insert(insertionPoint.pos, insertionPoint.val);
-                }
+                map = newMap;
             }
 
             var summary = new Dictionary<char, long>();
-
-            foreach (var ch in result)
+            foreach (var key in map.Keys)
             {
-                if (!summary.ContainsKey(ch))
-                {
-                    summary.Add(ch, 0);
-                }
-
-                summary[ch] = summary[ch] + 1;
+                AddOrIncrement(summary, key[0], map[key]);
             }
+
             var amountOfMostCommon = summary.Max(x => x.Value);
             var min = summary.Min(x => x.Value);
 
-            return amountOfMostCommon - min;
+            return amountOfMostCommon - min + 1;
 
+        }
+
+        private void AddOrIncrement<T>(Dictionary<T, long> map, T key, long incrementVal = 1)
+        {
+            if (!map.TryAdd(key, incrementVal))
+            {
+                map[key] += incrementVal;
+            }
         }
 
 
